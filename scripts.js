@@ -6,37 +6,39 @@
  * Notar `console.assert` til að athuga hvort föll virki rétt.
  */
 
-import { isString, splitOnWhitespace } from './lib/helpers.js';
+import { isString, splitOnWhitespace } from "./lib/helpers.js";
+import { removeHidden } from "./lib/removeHidden.js";
+import { updateOutput } from "./lib/updateOutput.js";
+import { addHidden } from "./lib/addHidden.js";
 
-const test = isString('hæ');
-console.log('test er strengur?', test);
+function submitHandler(event) {
+  event.preventDefault();
+  const outputElement = document.querySelector(".output");
+  if (outputElement) {
+    removeHidden(outputElement);
+  }
+  const textareaElement = document.querySelector("textarea");
+  if (textareaElement) {
+    updateOutput(textareaElement.value);
+  }
+}
 
-const stringWithWhitespace = `halló
-\theimur
-hæ`;
-const split = splitOnWhitespace(stringWithWhitespace);
-console.log(split);
+function resetHandler() {
+  const outputElement = document.querySelector(".output");
+  if (outputElement) {
+    addHidden(outputElement);
+  }
+}
 
 const formElement = document.querySelector("form");
 
+if (formElement) {
+  formElement.addEventListener("submit", submitHandler);
+  formElement.addEventListener("reset", resetHandler);
 
-/**
- * 
- * @param {Element} el 
- */
-function removeHidden(el) {
-    el.classList.remove("hidden");
+  const textareaElement = document.querySelector("textarea");
+
+  if (textareaElement) {
+    textareaElement.addEventListener("input", submitHandler);
+  }
 }
-
-function submitHandler(event) {
-    event.preventDefault();
-    const { target } = event;
-    const textareaElement = document.querySelector("textarea");
-    console.log(textareaElement.value);
-    const outputElement = document.querySelector(".output")
-    if (outputElement) {
-        removeHidden(outputElement)
-    }
-}
-
-formElement.addEventListener("submit", submitHandler);
